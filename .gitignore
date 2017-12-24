@@ -8,5 +8,7 @@ pom.xml.asc
 /.lein-*
 /.nrepl-history
 /.nrepl-port
+/.cljs_node_repl/
+/out/
 .hgignore
 .hg/
