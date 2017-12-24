@@ -1,10 +1,11 @@
+
 (def project 'familiar)
 (def version "0.1.0-SNAPSHOT")
 
-(set-env! :resource-paths #{"resources" "src"}
-          :source-paths   #{"test"}
           :dependencies   '[[org.clojure/clojure "RELEASE"]
                             [adzerk/boot-test "RELEASE" :scope "test"]])
+(set-env! :resource-paths #{"resource" "source/cljc"}
+          :source-paths   #{"test/cljc"}
 
 (task-options!
  pom {:project     project
