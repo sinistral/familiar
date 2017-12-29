@@ -3,6 +3,10 @@
   (:require [clojure.test  :as test :refer [deftest is testing]]
             [familiar.core :as f]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(deftest test:format
+  (is (= ":foo" (f/format nil "~a" :foo)))
+  (is (= ":foo :bar" (f/format nil "~a ~a" :foo :bar))))
+
+(deftest test:fmtstr
+  (is (= ":foo" (f/fmtstr "~a" :foo)))
+  (is (= ":foo :bar" (f/fmtstr "~a ~a" :foo :bar))))

@@ -33,7 +33,15 @@
   (comp (pom) (jar) (install)))
 
 (require '[adzerk.boot-test            :as clj-test]
+         '[cemerick.piggieback         :as piggieback]
+         '[cljs.repl.node              :as cljs-repl]
          '[crisptrutski.boot-cljs-test :as cljs-test])
+
+(swap! boot.repl/*default-middleware* conj 'cemerick.piggieback/wrap-cljs-repl)
+
+(defn start-cljs-repl
+  []
+  (piggieback/cljs-repl (cljs-repl/repl-env)))
 
 (deftask test-clj
   []
