@@ -55,7 +55,6 @@
 ;; ------------------------------------------------------------------------- ;;
 
 (deftask build-doc
-  "Build project documentation."
   []
   (comp (codox/codox
          :name (str project)
@@ -63,6 +62,19 @@
          :source-paths source-paths)))
 
 (deftask build-jar
-  "Build and install the project locally."
   []
-  (comp (pom) (jar) (install)))
+  (comp (pom) (jar)))
+
+(deftask install-jar
+  []
+  (comp (build-jar)
+        (install)))
+
+(deftask build-all
+  []
+  (comp (test-clj)
+        (test-cljs)
+        (build-jar)
+        (build-doc)
+        (target)
+        (install)))
