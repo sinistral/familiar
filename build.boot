@@ -2,17 +2,21 @@
 (def project 'familiar)
 (def version "0.1.0-SNAPSHOT")
 
+(def source-paths #{"source/cljc" "source/clj" "source/cljs"})
+
 (set-env! :resource-paths
-          #{"resource" "source/cljc" "source/clj" "source/cljs"}
+          (conj source-paths "resource")
           :source-paths
           #{"test/cljc"}
           :dependencies
           '[[org.clojure/clojure         "1.9.0"        :scope "provided"]
             [org.clojure/core.match      "0.3.0-alpha5" :scope "provided"]
             [org.clojure/clojurescript   "1.9.946"      :scope "provided"]
-            ;; clj dependencies
+            ;; clj dev dependencies
             [adzerk/boot-test            "RELEASE"      :scope "test"]
-            ;; cljs dependencies
+            ;; dev dependencies
+            [boot-codox                  "0.10.3"       :scope "test"]
+            ;; cljs dev dependencies
             [adzerk/boot-cljs            "2.1.4"        :scope "test"]
             [crisptrutski/boot-cljs-test "0.3.4"        :scope "test"]
             ;; REPL dependencies.
@@ -28,14 +32,10 @@
       :license     {"Eclipse Public License"
                     "http://www.eclipse.org/legal/epl-v10.html"}})
 
-(deftask build-jar
-  "Build and install the project locally."
-  []
-  (comp (pom) (jar) (install)))
-
 (require '[adzerk.boot-test            :as clj-test]
          '[cemerick.piggieback         :as piggieback]
          '[cljs.repl.node              :as cljs-repl]
+         '[codox.boot                  :as codox]
          '[crisptrutski.boot-cljs-test :as cljs-test])
 
 (swap! boot.repl/*default-middleware* conj 'cemerick.piggieback/wrap-cljs-repl)
@@ -51,3 +51,18 @@
 (deftask test-cljs
   []
   (cljs-test/test-cljs :exit? true :js-env :node))
+
+;; ------------------------------------------------------------------------- ;;
+
+(deftask build-doc
+  "Build project documentation."
+  []
+  (comp (codox/codox
+         :name (str project)
+         :version (str version)
+         :source-paths source-paths)))
+
+(deftask build-jar
+  "Build and install the project locally."
+  []
+  (comp (pom) (jar) (install)))
