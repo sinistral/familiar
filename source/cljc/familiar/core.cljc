@@ -18,6 +18,14 @@
   [format-in & args]
   (apply cl-format (conj args format-in nil)))
 
+(defn non-nil!
+  "Asserts (using `assert`) that `x` is not nil and returns it if it is not."
+  ([x]
+   (non-nil! x nil))
+  ([x message]
+   (assert (not (nil? x)) message)
+   x))
+
 (defn single!
   "Returns the only element of a collection, and throws an exception if there
   is not exactly one element in the sequence."
