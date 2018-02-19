@@ -31,8 +31,8 @@
       :description "A Clojure(Script) companion library."
       ; :url         "http://example/FIXME"
       :scm         {:url "https://github.com/sinistral/familiar"}
-      :license     {"Eclipse Public License"
-                    "http://www.eclipse.org/legal/epl-v10.html"}})
+      :license     {"2-Clause BSD License"
+                    "https://opensource.org/licenses/BSD-2-Clause"}})
 
 (require '[adzerk.boot-test            :as clj-test]
          '[cemerick.piggieback         :as piggieback]
