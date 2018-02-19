@@ -21,7 +21,9 @@
             [crisptrutski/boot-cljs-test "0.3.4"        :scope "test"]
             ;; REPL dependencies.
             [com.cemerick/piggieback     "0.2.1"        :scope "test"]
-            [org.clojure/tools.nrepl     "0.2.12"       :scope "test"]])
+            [org.clojure/tools.nrepl     "0.2.12"       :scope "test"]]
+          :repositories
+          #(conj % ["clojars" {:url "https://clojars.org/repo/"}]))
 
 (task-options!
  pom {:project     project
@@ -83,3 +85,14 @@
         (build-jar)
         (build-doc)
         (target)))
+
+;; ------------------------------------------------------------------------- ;;
+
+(deftask deploy-jar
+  []
+  (comp (test-all)
+        (build-jar)
+        (push :repo "clojars"
+              :gpg-sign true
+              :gpg-user-id (System/getenv "CLOJARS_GPG_KEY_ID")
+              :ensure-snapshot true)))
