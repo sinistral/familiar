@@ -1,11 +1,11 @@
 
 (def project 'familiar)
-(def version "0.1.0-SNAPSHOT")
+(def version (slurp "VERSION"))
 
-(def source-paths #{"source/cljc" "source/clj" "source/cljs"})
+(def source-paths #{"source/cljc" "source/clj"})
 
 (set-env! :resource-paths
-          (conj source-paths "resource")
+          source-paths
           :source-paths
           #{"test/cljc"}
           :dependencies
@@ -40,6 +40,8 @@
 
 (swap! boot.repl/*default-middleware* conj 'cemerick.piggieback/wrap-cljs-repl)
 
+(declare build-jar)
+
 (defn start-cljs-repl
   []
   (piggieback/cljs-repl (cljs-repl/repl-env)))
@@ -51,6 +53,16 @@
 (deftask test-cljs
   []
   (cljs-test/test-cljs :exit? true :js-env :node))
+
+(deftask test-all
+  []
+  (comp (test-clj)
+        (test-cljs)))
+
+(deftask install-jar
+  []
+  (comp (build-jar)
+        (install)))
 
 ;; ------------------------------------------------------------------------- ;;
 
@@ -65,16 +77,9 @@
   []
   (comp (pom) (jar)))
 
-(deftask install-jar
-  []
-  (comp (build-jar)
-        (install)))
-
 (deftask build-all
   []
-  (comp (test-clj)
-        (test-cljs)
+  (comp (test-all)
         (build-jar)
         (build-doc)
-        (target)
-        (install)))
+        (target)))
