@@ -32,10 +32,10 @@ doc:
 	cd $(docdir) \
 		&& git symbolic-ref HEAD refs/heads/gh-pages \
 		&& rm .git/index \
-		&& git clean -fdx
+		&& git clean -fdx \
+		&& git checkout gh-pages
 	boot -- build-doc -- target --no-clean
 	cd $(docdir) \
-		&& git checkout gh-pages \
 		&& git add . \
 		&& git commit -m "Update API docs: $(version)" \
 		&& git push -u origin gh-pages
