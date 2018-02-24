@@ -5,9 +5,8 @@
 
 (defn format
   "Replaces `clojure.core/format` with `clojure.pprint/cl-format`.  Takes the
-  same arguments as [cl-format]; for details please refer to
-  the [documentation][cl-format] for that function.
-  [cl-format]: https://clojure.github.io/clojure/clojure.pprint-api.html#clojure.pprint/cl-format"
+  same arguments as `cl-format`.
+  See: https://clojure.github.io/clojure/clojure.pprint-api.html#clojure.pprint/cl-format"
   [writer format-in & args]
   (apply cl-format writer format-in args))
 
@@ -27,8 +26,8 @@
    x))
 
 (defn single!
-  "Returns the only element of a collection, and throws an exception if there
-  is not exactly one element in the sequence."
+  "Asserts (using `assert`) that `coll` contains only a single element; does
+  not realise lazy sequences."
   [coll]
   (assert (not (empty? coll)) "Expected a collection with a single element, found an empty collection.")
   (assert (empty? (rest coll)) "Expected a collection with a single element, found a collection with multiple elements.")
