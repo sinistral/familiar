@@ -19,11 +19,13 @@ for details.
 
 ## License
 
-**familiar** is published under the [2-clause BSD license].
+Published under the [2-clause BSD license][license].
 
 Copyright (c) 2018 Marc Daya
+
+#
 
 [convenience]: https://sinistral.github.io/familiar/familiar.core.html#var-fmtstr
 [safety]: https://sinistral.github.io/familiar/familiar.core.html#var-single
 [extended functionality]: https://sinistral.github.io/familiar/familiar.test.html
-[2-clause BSD License]: https://opensource.org/licenses/BSD-2-Clause
+[license]: https://opensource.org/licenses/BSD-2-Clause
