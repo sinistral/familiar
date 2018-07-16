@@ -88,7 +88,7 @@
 
 ;; ------------------------------------------------------------------------- ;;
 
-(deftask deploy-jar
+(deftask deploy-snapshot
   []
   (comp (test-all)
         (build-jar)
@@ -96,3 +96,12 @@
               :gpg-sign true
               :gpg-user-id (System/getenv "CLOJARS_GPG_KEY_ID")
               :ensure-snapshot true)))
+
+(deftask deploy-release
+  []
+  (comp (test-all)
+        (build-jar)
+        (push :repo "clojars"
+              :gpg-sign true
+              :gpg-user-id (System/getenv "CLOJARS_GPG_KEY_ID")
+              :ensure-release true)))
