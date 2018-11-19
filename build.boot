@@ -20,7 +20,7 @@
             [adzerk/boot-cljs            "2.1.4"        :scope "test"]
             [crisptrutski/boot-cljs-test "0.3.4"        :scope "test"]
             ;; REPL dependencies.
-            [com.cemerick/piggieback     "0.2.1"        :scope "test"]
+            [cider/piggieback            "0.3.10"       :scope "test"]
             [org.clojure/tools.nrepl     "0.2.12"       :scope "test"]]
           :repositories
           #(conj % ["clojars" {:url "https://clojars.org/repo/"}]))
@@ -35,18 +35,16 @@
                     "https://opensource.org/licenses/BSD-2-Clause"}})
 
 (require '[adzerk.boot-test            :as clj-test]
-         '[cemerick.piggieback         :as piggieback]
          '[cljs.repl.node              :as cljs-repl]
+         '[cider.piggieback            :as piggieback :refer [cljs-repl]]
          '[codox.boot                  :as codox]
          '[crisptrutski.boot-cljs-test :as cljs-test])
-
-(swap! boot.repl/*default-middleware* conj 'cemerick.piggieback/wrap-cljs-repl)
 
 (declare build-jar)
 
 (defn start-cljs-repl
   []
-  (piggieback/cljs-repl (cljs-repl/repl-env)))
+  (cljs-repl (cljs-repl/repl-env)))
 
 (deftask test-clj
   []
