@@ -24,21 +24,37 @@
          #"Boom!"
          (f/non-nil! nil "Boom!")))))
 
+(defn- verify-single!-msg
+  [coll msg-or-msgs re]
+  (is (thrown-with-msg?
+        #?(:clj  AssertionError :cljs js/Error)
+        re
+        (apply f/single! coll msg-or-msgs))))
+
+(defn- test-single-modes
+  [<1 =1 >1]
+  (is (thrown-with-msg?
+        #?(:clj  AssertionError :cljs js/Error)
+        #"found an empty collection"
+        (f/single! <1)))
+  (is (= (first =1) (f/single! =1)))
+  (is (thrown-with-msg?
+        #?(:clj  AssertionError :cljs js/Error)
+        #"found a collection with multiple elements"
+        (f/single! >1))))
+
 (deftest test:single
-  (letfn [(test-single-modes [<1 =1 >1]
-            (is (thrown-with-msg?
-                 #?(:clj  AssertionError :cljs js/Error)
-                 #"found an empty collection"
-                 (f/single! <1)))
-            (is (= (first =1) (f/single! =1)))
-            (is (thrown-with-msg?
-                 #?(:clj  AssertionError :cljs js/Error)
-                 #"found a collection with multiple elements"
-                 (f/single! >1))))]
+  (letfn []
     (testing "simple collections"
       (test-single-modes [] [1] [1 2 3]))
     (testing "compound collections"
       (test-single-modes {} {:a 1} {:a 1 :b 2}))
     (testing "lazy collections"
       (letfn [(gen-seq [n] (take n (repeatedly rand)))]
-        (test-single-modes (gen-seq 0) (gen-seq 1) (gen-seq 3))))))
+        (test-single-modes (gen-seq 0) (gen-seq 1) (gen-seq 3))))
+    (testing "custom message: general"
+      (verify-single!-msg [] ["foo"] #"found an empty collection; foo:")
+      (verify-single!-msg [1 2] ["foo"] #"found a collection with multiple elements; foo:"))
+    (testing "custom message: specific"
+      (verify-single!-msg [] ["empty" "many"] #": empty:")
+      (verify-single!-msg [1 2] ["empty" "many"] #": many:"))))

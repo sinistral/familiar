@@ -25,10 +25,23 @@
    (assert (not (nil? x)) message)
    x))
 
-(defn single!
-  "Asserts (using `assert`) that `coll` contains only a single element; does
-  not realise lazy sequences."
-  [coll]
-  (assert (not (empty? coll)) "Expected a collection with a single element, found an empty collection.")
-  (assert (empty? (rest coll)) "Expected a collection with a single element, found a collection with multiple elements.")
-  (first coll))
+(let [empty-msg "Expected a collection with a single element, found an empty collection"
+      many-msg "Expected a collection with a single element, found a collection with multiple elements"]
+  (defn single!
+    "Asserts (using `assert`) that `coll` contains only a single element; does
+  not realise lazy sequences.
+
+  The multi-arity versions of the functions allow additional context to be
+  added to the assertion message; in the arity 2 case `msg` is appended to
+  the default assertion msg, while in the arity 3 case `empty-msg` and
+  `many-msg` *replace* the default assertion message for collections with
+  <1 and >1 elements respectively."
+    ([coll]
+     (single! coll nil))
+    ([coll msg]
+     (let [extended-msg (if-not msg "" (str "; " msg))]
+       (single! coll (str empty-msg extended-msg) (str many-msg extended-msg))))
+    ([coll empty-msg many-msg]
+     (assert (not (empty? coll)) (str empty-msg ": "))
+     (assert (empty? (rest coll)) (str many-msg ": "))
+     (first coll))))
