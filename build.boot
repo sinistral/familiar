@@ -1,7 +1,4 @@
 
-(def project 'familiar)
-(def version (slurp "VERSION"))
-
 (def source-paths #{"source/cljc" "source/clj"})
 
 (set-env! :resource-paths
@@ -25,6 +22,16 @@
           :repositories
           #(conj % ["clojars" {:url "https://clojars.org/repo/"}]))
 
+(require '[clojure.string              :as str :refer [trim]]
+         '[adzerk.boot-test            :as clj-test]
+         '[cljs.repl.node              :as cljs-repl]
+         '[cider.piggieback            :as piggieback :refer [cljs-repl]]
+         '[codox.boot                  :as codox]
+         '[crisptrutski.boot-cljs-test :as cljs-test])
+
+(def project 'familiar)
+(def version (trim (slurp "VERSION")))
+
 (task-options!
  pom {:project     project
       :version     version
@@ -33,12 +40,6 @@
       :scm         {:url "https://github.com/sinistral/familiar"}
       :license     {"2-Clause BSD License"
                     "https://opensource.org/licenses/BSD-2-Clause"}})
-
-(require '[adzerk.boot-test            :as clj-test]
-         '[cljs.repl.node              :as cljs-repl]
-         '[cider.piggieback            :as piggieback :refer [cljs-repl]]
-         '[codox.boot                  :as codox]
-         '[crisptrutski.boot-cljs-test :as cljs-test])
 
 (declare build-jar)
 
