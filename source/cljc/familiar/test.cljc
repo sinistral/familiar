@@ -51,7 +51,8 @@
       (is (= ::foo (test-subject ...)))))
   ```
   which allows fixtures to succinctly express variance in test conditions
-  without having to resort to dynamic vars for that configuration."
+  without having to resort to dynamic vars, atoms or volatiles for that
+  configuration."
   #?(:cljs (:require-macros [familiar.test.assertions]
                             [familiar.test :refer [with-fixtures]]))
   #?(:clj  (:require [clojure.test :as test]
