@@ -17,6 +17,11 @@ for details.
 [![Build Status](https://travis-ci.org/sinistral/familiar.svg?branch=master)](https://travis-ci.org/sinistral/familiar)
 [![Clojars Project](https://img.shields.io/clojars/v/familiar.svg)](https://clojars.org/familiar)
 
+## Development
+
+* [Boot](https://github.com/boot-clj) 2.8.3
+* [CIDER](https://github.com/clojure-emacs/cider/tree/v0.21.0) 0.21.0 (New York)
+
 ## License
 
 Published under the [2-clause BSD license][license].

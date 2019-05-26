@@ -17,8 +17,8 @@
             [adzerk/boot-cljs            "2.1.4"        :scope "test"]
             [crisptrutski/boot-cljs-test "0.3.4"        :scope "test"]
             ;; REPL dependencies.
-            [cider/piggieback            "0.3.10"       :scope "test"]
-            [org.clojure/tools.nrepl     "0.2.12"       :scope "test"]]
+            [cider/cider-nrepl           "0.21.1"       :scope "test"]
+            [cider/piggieback            "0.4.1"        :scope "test"]]
           :repositories
           #(conj % ["clojars" {:url "https://clojars.org/repo/"}]))
 
