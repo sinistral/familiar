@@ -11,6 +11,7 @@ env:
     - BOOT_CLOJURE_VERSION=1.8.0
     - BOOT_CLOJURE_VERSION=1.9.0
     - BOOT_CLOJURE_VERSION=1.10.0
+dist: trusty
 jdk:
   - oraclejdk8
 cache:
