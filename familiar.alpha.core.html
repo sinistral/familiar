@@ -21,7 +21,27 @@ is written as
       [:else
        :baz])
 
-which is advantageous as the expressions in the clauses increase in length.</pre></div></div><div class="public anchor" id="var-cond-.3E"><h3>cond-&gt;</h3><h4 class="type">macro</h4><div class="usage"><code>(cond-&gt; expr &amp; clauses)</code></div><div class="doc"><pre class="plaintext"></pre></div></div><div class="public anchor" id="var-cond-.3E.3E"><h3>cond-&gt;&gt;</h3><h4 class="type">macro</h4><div class="usage"><code>(cond-&gt;&gt; expr &amp; clauses)</code></div><div class="doc"><pre class="plaintext">Like clojure.core/cond-&gt;&gt;, but with wrapped bindings to facilitate
+which is advantageous as the expressions in the clauses increase in length.</pre></div></div><div class="public anchor" id="var-cond-.3E"><h3>cond-&gt;</h3><h4 class="type">macro</h4><div class="usage"><code>(cond-&gt; expr &amp; clauses)</code></div><div class="doc"><pre class="plaintext">Like clojure.core/cond-&gt;, but with wrapped bindings to facilitate
+indentation-driven inference of clause grouping; e.g.: the clojure.core/cond-&gt;
+form
+
+(cond-&gt;
+    x
+  (let [[y (:foo x)]] (and (int? y) (even? y)))
+  (update :foo inc)
+  (let [[y (:bar x)]] (and (int? y) (even? y)))
+  (update :bar inc))
+
+is written as
+
+(cond-&gt;
+    x
+  [(let [[y (:foo x)]] (and (int? y) (even? y)))
+   (update :foo inc)]
+  [(let [[y (:bar x)]] (and (int? y) (even? y)))
+   (update :bar inc)])
+
+which is advantageous as the expressions in the clauses increase in length.</pre></div></div><div class="public anchor" id="var-cond-.3E.3E"><h3>cond-&gt;&gt;</h3><h4 class="type">macro</h4><div class="usage"><code>(cond-&gt;&gt; expr &amp; clauses)</code></div><div class="doc"><pre class="plaintext">Like clojure.core/cond-&gt;&gt;, but with wrapped bindings to facilitate
 indentation-driven inference of clause grouping; e.g.: the clojure.core/cond-&gt;&gt;
 form
 
