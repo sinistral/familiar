@@ -1,10 +1,12 @@
 
 (ns familiar.test-test
   #?(:cljs (:require-macros [familiar.test-test :refer [with-test-report]]))
-  (:require [clojure.test       :as test :refer [deftest is testing]]
-            [clojure.core.match :as match]
-            [clojure.string     :as string]
-            [familiar.test      :as ft]))
+  (:require [clojure.test        :as test :refer [deftest is testing]]
+            [clojure.core.match  :as match]
+            [clojure.string      :as string]
+
+            [familiar.test       :as ft]
+            [familiar.alpha.test :as fta]))
 
 #?(:clj (defmacro with-test-report
           [name expr tests]
@@ -95,3 +97,66 @@
     (binding [*fixture-effects* (volatile! '())]
       (ft/with-fixtures [(fxf inc) (fx1 1)]
         (is (= [2] @*fixture-effects*))))))
+
+(defn- a-fn [] 0)
+
+(deftest test:fn-double
+  (testing "doubles can be invoked"
+    (let [fn-double (-> (volatile! [(fta/->FnDoubleSequentialInvocationImpl identity ::doppelganger)])
+                          fta/->FnDoubleSequentialInvocationStategyImpl
+                          (fta/->FnDoubleImpl {:fn a-fn}))]
+        (is (= ::doppelganger (fn-double 0))))))
+
+(deftest test:fn-double-sequential-strategy
+  (testing "sequential fn doubles pass expected invocations"
+    (let [fn-double (-> (volatile! [(fta/->FnDoubleSequentialInvocationImpl identity ::doppelganger)])
+                        fta/->FnDoubleSequentialInvocationStategyImpl
+                        (fta/->FnDoubleImpl {:fn a-fn}))]
+      (is (= ::doppelganger (fn-double 0)))))
+  (testing "sequential fn doubles fail on unexpected invocations"
+    (with-test-report r
+      (let [fn-double (-> (volatile! [])
+                          fta/->FnDoubleSequentialInvocationStategyImpl
+                          (fta/->FnDoubleImpl {:fn a-fn}))]
+        (fn-double 0))
+      ((is (= :fail (:type @r))))))
+  (testing "sequential fn doubles fail on unmatched args"
+    (with-test-report r
+      (let [fn-double (-> (volatile! [(fta/->FnDoubleSequentialInvocationImpl (constantly false) ::doppelganger)])
+                          fta/->FnDoubleSequentialInvocationStategyImpl
+                          (fta/->FnDoubleImpl {:fn a-fn}))]
+        (fn-double 0))
+      ((is (= :fail (:type @r))))))
+  (testing "sequential fn doubles don't return the expected result on an unmatched invocation"
+    (let [fn-double (-> (volatile! [(fta/->FnDoubleSequentialInvocationImpl (constantly false) ::doppelganger)])
+                        fta/->FnDoubleSequentialInvocationStategyImpl
+                        (fta/->FnDoubleImpl {:fn a-fn}))]
+      (with-test-report r
+        (is (nil? (fn-double 0)))
+        ())))
+  (testing "ret is invoked as a fn"
+    (let [fn-double (-> (volatile! [(fta/->FnDoubleSequentialInvocationImpl identity #(-> % :args first inc))])
+                        fta/->FnDoubleSequentialInvocationStategyImpl
+                        (fta/->FnDoubleImpl {:fn a-fn}))]
+      (is (= 100 (fn-double 99)))))
+  (testing "sequential fn doubles pass expected invocations"
+    (let [seq-strategy (-> (volatile! [(fta/->FnDoubleSequentialInvocationImpl identity ::doppelganger)])
+                           fta/->FnDoubleSequentialInvocationStategyImpl)
+          fn-double    (fta/->FnDoubleImpl seq-strategy {:fn a-fn})]
+      (fn-double 0)
+      (is (fta/exhausted? seq-strategy))))
+  (testing "sequential fn doubles fail when all invocations are not consumed"
+    (testing "query"
+      (let [seq-strategy (-> (volatile! [(fta/->FnDoubleSequentialInvocationImpl identity ::doppelganger)])
+                             fta/->FnDoubleSequentialInvocationStategyImpl)
+            fn-double    (fta/->FnDoubleImpl seq-strategy {:fn a-fn})]
+        (with-test-report r
+          (is (fta/exhausted? seq-strategy))
+          ((is (= :fail (:type @r)))))))
+    (testing "assert"
+      (let [seq-strategy (-> (volatile! [(fta/->FnDoubleSequentialInvocationImpl identity ::doppelganger)])
+                             fta/->FnDoubleSequentialInvocationStategyImpl)
+            fn-double    (fta/->FnDoubleImpl seq-strategy {:fn a-fn})]
+        (with-test-report r
+          (fta/exhausted seq-strategy)
+          ((is (= :fail (:type @r)))))))))
